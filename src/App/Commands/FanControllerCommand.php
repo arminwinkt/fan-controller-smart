@@ -2,6 +2,7 @@
 
 namespace Console\App\Commands;
 
+use Console\App\Services\SwitchBot\Api\SwitchBotApiDeviceList;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,30 +23,10 @@ class FanControllerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $token = $_ENV['TOKEN'];
-        $secret = $_ENV['SECRET'];
-        $nonce = Uuid::v4();
-        $t = time() * 1000;
-        $data = utf8_encode($token . $t . $nonce);
-        $sign = hash_hmac('sha256', $data, $secret, true);
-        $sign = strtoupper(base64_encode($sign));
 
+        $test = new SwitchBotApiDeviceList();
+        var_dump($test->request());
 
-        $client = HttpClient::create([
-            'headers' => [
-                "Content-Type:application/json",
-                "Authorization:" . $token,
-                "sign:" . $sign,
-                "nonce:" . $nonce,
-                "t:" . $t
-            ]
-        ]);
-        $response = $client->request('GET', 'https://api.switch-bot.com/v1.1/devices');
-        $statusCode = $response->getStatusCode();
-        $content = $response->toArray();
-
-        var_dump($statusCode);
-        var_dump($content);
         die();
 
 
