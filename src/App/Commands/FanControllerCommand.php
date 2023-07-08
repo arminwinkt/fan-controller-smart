@@ -6,6 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Uid\Uuid;
 
 
@@ -29,25 +30,24 @@ class FanControllerCommand extends Command
         $sign = hash_hmac('sha256', $data, $secret, true);
         $sign = strtoupper(base64_encode($sign));
 
-        $url = "https://api.switch-bot.com/v1.1/devices";
 
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $client = HttpClient::create([
+            'headers' => [
+                "Content-Type:application/json",
+                "Authorization:" . $token,
+                "sign:" . $sign,
+                "nonce:" . $nonce,
+                "t:" . $t
+            ]
+        ]);
+        $response = $client->request('GET', 'https://api.switch-bot.com/v1.1/devices');
+        $statusCode = $response->getStatusCode();
+        $content = $response->toArray();
 
-        $headers = array(
-            "Content-Type:application/json",
-            "Authorization:" . $token,
-            "sign:" . $sign,
-            "nonce:" . $nonce,
-            "t:" . $t
-        );
+        var_dump($statusCode);
+        var_dump($content);
+        die();
 
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        $response = curl_exec($curl);
-        curl_close($curl);
-
-        var_dump($response);
 
 
         $url = 'https://api.switch-bot.com/v1.1/devices/D61252CF00A6/commands';
