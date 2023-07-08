@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Console\App\Commands\FanControllerCommand;
+use Symfony\Component\Console\Application;
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+$dotenv->required('TOKEN')->notEmpty();
+$dotenv->required('SECRET')->notEmpty();
+
+
+$app = new Application();
+$app->add(new FanControllerCommand());
+$app->run();
