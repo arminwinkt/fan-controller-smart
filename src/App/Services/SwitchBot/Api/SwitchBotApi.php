@@ -3,6 +3,7 @@
 namespace Console\App\Services\SwitchBot\Api;
 
 
+use Exception;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -48,7 +49,6 @@ abstract class SwitchBotApi
      * @throws RedirectionExceptionInterface
      * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
-     * @throws \HttpResponseException
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
      */
@@ -62,12 +62,12 @@ abstract class SwitchBotApi
         $response = $this->httpClient->request($method, $url, $options);
 
         if ($response->getStatusCode() !== 200) {
-            throw new \HttpResponseException("SwitchBotApi Http Code does not return 200 for $url");
+            throw new Exception("SwitchBotApi Http Code does not return 200 for $method $url. (Status code: {$response->getStatusCode()})");
         }
 
         $content = $response->toArray();
         if ($content['statusCode'] !== 100) {
-            throw new \Exception("SwitchBotApi result does not return status 100 for $url");
+            throw new Exception("SwitchBotApi result does not return status 100 for $url");
         }
 
         return $this->formatResult($content);
@@ -75,7 +75,6 @@ abstract class SwitchBotApi
 
 
     /**
-     * @throws \HttpResponseException
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
      * @throws RedirectionExceptionInterface
@@ -87,6 +86,3 @@ abstract class SwitchBotApi
     protected abstract function formatResult(array $content): ?array;
 
 }
-
-
-
