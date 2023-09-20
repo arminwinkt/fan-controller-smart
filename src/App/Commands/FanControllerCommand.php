@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
-
 class FanControllerCommand extends Command
 {
     protected function configure(): void
@@ -50,6 +49,3 @@ class FanControllerCommand extends Command
 
     }
 }
-
-
-

@@ -33,8 +33,10 @@ class SwitchBotApiDeviceCommand extends SwitchBotApi
             throw new Exception("Missing argument `id`");
         }
 
-        return $this->fetch(self::HTTP_METHOD_POST, "devices/$id/command", [
+        return $this->fetch(self::HTTP_METHOD_POST, "devices/$id/commands", [
             'command' => $command,
+            'parameter' => 'default',
+            'commandType' => 'command',
         ]);
     }
 
