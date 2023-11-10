@@ -7,6 +7,8 @@ use Console\App\Enums\SwitchBot\Status;
 use Console\App\Services\SwitchBot\Api\SwitchBotApiDeviceCommand;
 use Console\App\Services\SwitchBot\Api\SwitchBotApiDeviceList;
 use Console\App\Services\SwitchBot\Api\SwitchBotApiDeviceStatus;
+use Console\App\Services\Temperature\DewPointCalculationService;
+use Exception;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -19,14 +21,16 @@ class SwitchBotService
     private SwitchBotApiDeviceList $list;
     private SwitchBotApiDeviceStatus $status;
 
+    private array $deviceList;
     private string $botId;
 
     /**
-     * @throws TransportExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws Exception
      */
     public function __construct()
     {
@@ -34,6 +38,7 @@ class SwitchBotService
         $this->list = new SwitchBotApiDeviceList();
         $this->status = new SwitchBotApiDeviceStatus();
 
+        $this->deviceList = $this->list->request();
         $this->botId = $this->getBotId();
     }
 
@@ -76,22 +81,49 @@ class SwitchBotService
     }
 
     /**
-     * @throws TransportExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws DecodingExceptionInterface
-     * @throws ClientExceptionInterface
+     * @throws Exception
      */
     private function getBotId(): string
     {
-        $list = $this->list->request();
-
-        $key = array_search('Bot', array_column($list, 'deviceType'));
-        if (!$key || empty($list[$key]['deviceId'])) {
-            throw new \Exception("Bot is not found in devicelist.");
+        $device = $this->list->findDevice('Bot', $this->deviceList, 'deviceType');
+        if (!$device) {
+            throw new Exception("Bot is not found in devicelist.");
         }
 
-        return $list[$key]['deviceId'];
+        return $device['deviceId'];
+    }
+
+    /**
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function botAuto(): bool
+    {
+        $deviceOutdoor = $this->list->findDevice(METER_OUTDOOR, $this->deviceList);
+        if (!$deviceOutdoor) {
+            throw new Exception("Outdoor meter is not found in devicelist.");
+        }
+        $deviceIndoor = $this->list->findDevice(METER_INDOOR, $this->deviceList);
+        if (!$deviceIndoor) {
+            throw new Exception("Indoor meter is not found in devicelist.");
+        }
+
+        $statusOutdoor = $this->status->request(['id' => $deviceOutdoor['deviceId']]);
+        $statusIndoor = $this->status->request(['id' => $deviceIndoor['deviceId']]);
+
+        $calculate = new DewPointCalculationService($statusOutdoor, $statusIndoor);
+        if ($calculate->calculate()) {
+            var_dump('TURN ONNNN');
+            $this->botTurnOn();
+            return true;
+        }
+
+        var_dump('TURN OFFFF');
+        $this->botTurnOff();
+        return true;
     }
 }
 

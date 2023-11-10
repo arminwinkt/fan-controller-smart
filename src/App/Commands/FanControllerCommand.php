@@ -34,7 +34,7 @@ class FanControllerCommand extends Command
                     $result = $service->botTurnOff();
                     break;
                 case 'auto':
-                    //$result = $service->botTurnOn();
+                    $result = $service->botAuto();
                     break;
                 default:
                     $output->writeln("Argument `mode` does not exist");

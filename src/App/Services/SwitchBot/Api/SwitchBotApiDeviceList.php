@@ -14,6 +14,16 @@ class SwitchBotApiDeviceList extends SwitchBotApi
         return $content['body']['deviceList'] ?? null;
     }
 
+    public function findDevice(string $id, array $list, string $column = 'deviceId'): ?array
+    {
+        $key = array_search($id, array_column($list, $column));
+        if ($key === false || empty($list[$key][$column])) {
+            return null;
+        }
+
+        return $list[$key];
+    }
+
 }
 
 
