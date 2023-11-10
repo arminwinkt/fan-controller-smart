@@ -25,19 +25,25 @@ class FanControllerCommand extends Command
         $service = new SwitchBotService();
         $result = false;
 
-        switch ($input->getArgument('mode')) {
-            case 'start':
-                $result = $service->botTurnOn();
-                break;
-            case 'stop':
-                $result = $service->botTurnOff();
-                break;
-            case 'auto':
-                //$result = $service->botTurnOn();
-                break;
-            default:
-                $output->writeln("Argument `mode` does not exist");
-                break;
+        try {
+            switch ($input->getArgument('mode')) {
+                case 'start':
+                    $result = $service->botTurnOn();
+                    break;
+                case 'stop':
+                    $result = $service->botTurnOff();
+                    break;
+                case 'auto':
+                    //$result = $service->botTurnOn();
+                    break;
+                default:
+                    $output->writeln("Argument `mode` does not exist");
+                    break;
+            }
+        } catch (\Throwable $exception) {
+            $output->writeln("Command failed.");
+            $output->writeln($exception->getMessage());
+            return Command::FAILURE;
         }
 
         if (!$result) {

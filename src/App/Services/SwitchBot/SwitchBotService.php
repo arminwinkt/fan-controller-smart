@@ -7,6 +7,11 @@ use Console\App\Enums\SwitchBot\Status;
 use Console\App\Services\SwitchBot\Api\SwitchBotApiDeviceCommand;
 use Console\App\Services\SwitchBot\Api\SwitchBotApiDeviceList;
 use Console\App\Services\SwitchBot\Api\SwitchBotApiDeviceStatus;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class SwitchBotService
 {
@@ -16,6 +21,13 @@ class SwitchBotService
 
     private string $botId;
 
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     */
     public function __construct()
     {
         $this->command = new SwitchBotApiDeviceCommand();
@@ -25,6 +37,13 @@ class SwitchBotService
         $this->botId = $this->getBotId();
     }
 
+    /**
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     */
     public function botTurnOn(): bool
     {
         $status = $this->status->request(['id' => $this->botId]);
@@ -37,6 +56,13 @@ class SwitchBotService
         return true;
     }
 
+    /**
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     */
     public function botTurnOff(): bool
     {
         $status = $this->status->request(['id' => $this->botId]);
@@ -49,6 +75,13 @@ class SwitchBotService
         return true;
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     */
     private function getBotId(): string
     {
         $list = $this->list->request();
