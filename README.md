@@ -1,11 +1,12 @@
 # Smart Fan Controller
 
-**An automatic job to control a fan to improve the humidity in any room.**  
-**It uses SwitchBot Meters to messure temperatures and SwitchBot Bot to toggle the Fan based on the Dew Point** 
+**Automatically regulate room humidity with this intelligent fan controller.**  
+This application leverages SwitchBot Meters to measure temperatures and SwitchBot Bots to control the fan. Its primary function is to enhance room humidity by allowing fresh air in, particularly when the outdoor humidity is lower than indoors.
 
 ## Requirements
 
 - PHP 8.1+
+- Composer
 - The application is tested on **Linux** (Ubuntu 19.04)
 - It should also run on Windows and MacOS - but it was not tested yet
 
@@ -36,6 +37,11 @@ $ nano ./src/config.php
 $ ./bin/console fan:controller auto
 ``` 
 for more details run `./bin/console fan:controller --help`
+
+
+## Work in Progress
+
+- **Dockerfile (Coming Soon)**: I am actively working on providing a Dockerfile for simplified deployment and containerization. Stay tuned for updates!
 
 
 ## License
