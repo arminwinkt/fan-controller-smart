@@ -5,9 +5,12 @@ This application leverages SwitchBot Meters to measure temperatures and SwitchBo
 
 ## Requirements
 
+- You need at least 2 SwitchBot Meters
+   - One for Indoors, one for outdoor measurements
+- You need one SwitchBot Bot to control the action (start and stop the Fan to let air in)
 - PHP 8.1+
 - Composer
-- The application is tested on **Linux** (Ubuntu 19.04)
+- The application is tested on **Linux** (Ubuntu 23.04)
 - It should also run on Windows and MacOS - but it was not tested yet
 
 ## Installation
@@ -41,7 +44,7 @@ for more details run `./bin/console fan:controller --help`
 
 ## Work in Progress
 
-- **Dockerfile (Coming Soon)**: I am actively working on providing a Dockerfile for simplified deployment and containerization. Stay tuned for updates!
+- **Dockerfile (Coming Soon)**: I am actively working on providing a Dockerfile for simplified deployment. Stay tuned for updates!
 
 
 ## License
