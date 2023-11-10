@@ -42,9 +42,17 @@ $ ./bin/console fan:controller auto
 for more details run `./bin/console fan:controller --help`
 
 
-## Work in Progress
+## Run with Docker
 
-- **Dockerfile (Coming Soon)**: I am actively working on providing a Dockerfile for simplified deployment. Stay tuned for updates!
+1: Build Docker Image
+```bash
+$ docker build -t fancontroller .
+```
+
+2: Run
+```bash
+$ docker run -it --rm fancontroller
+```
 
 
 ## License

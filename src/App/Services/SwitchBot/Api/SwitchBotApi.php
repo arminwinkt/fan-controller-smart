@@ -31,7 +31,7 @@ abstract class SwitchBotApi
         $secret = $_ENV['SECRET'];
         $nonce = Uuid::v4();
         $t = time() * 1000;
-        $data = utf8_encode($token . $t . $nonce);
+        $data = mb_convert_encoding($token . $t . $nonce, 'UTF-8');
         $sign = hash_hmac('sha256', $data, $secret, true);
         $sign = strtoupper(base64_encode($sign));
 
