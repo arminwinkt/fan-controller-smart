@@ -11,9 +11,6 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class SwitchBotApiDeviceStatus extends SwitchBotApi
 {
-    public const ON = 'on';
-    public const OFF = 'off';
-
     /**
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface

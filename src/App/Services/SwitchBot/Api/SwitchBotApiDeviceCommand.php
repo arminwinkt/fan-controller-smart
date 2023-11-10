@@ -2,6 +2,7 @@
 
 namespace Console\App\Services\SwitchBot\Api;
 
+use Console\App\Enums\SwitchBot\Command;
 use Exception;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -11,10 +12,6 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class SwitchBotApiDeviceCommand extends SwitchBotApi
 {
-    public const TURN_OFF = 'turnOff';
-    public const TURN_ON = 'turnOn';
-    public const PRESS = 'press';
-
     /**
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
@@ -43,5 +40,17 @@ class SwitchBotApiDeviceCommand extends SwitchBotApi
     protected function formatResult(array $content): ?array
     {
         return $content['body'] ?? null;
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     */
+    public function execute(Command $command, string $id): ?array
+    {
+        return $this->request(['command' => $command->value, 'id' => $id]);
     }
 }

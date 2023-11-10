@@ -2,6 +2,8 @@
 
 namespace Console\App\Services\SwitchBot;
 
+use Console\App\Enums\SwitchBot\Command;
+use Console\App\Enums\SwitchBot\Status;
 use Console\App\Services\SwitchBot\Api\SwitchBotApiDeviceCommand;
 use Console\App\Services\SwitchBot\Api\SwitchBotApiDeviceList;
 use Console\App\Services\SwitchBot\Api\SwitchBotApiDeviceStatus;
@@ -26,11 +28,11 @@ class SwitchBotService
     public function botTurnOn(): bool
     {
         $status = $this->status->request(['id' => $this->botId]);
-        if ($status['power'] === SwitchBotApiDeviceStatus::ON) {
+        if ($status['power'] === Status::On->value) {
             return true;
         }
 
-        $this->command->request(['command' => SwitchBotApiDeviceCommand::TURN_ON, 'id' => $this->botId]);
+        $this->command->execute(Command::TurnOn, $this->botId);
 
         return true;
     }
@@ -38,11 +40,11 @@ class SwitchBotService
     public function botTurnOff(): bool
     {
         $status = $this->status->request(['id' => $this->botId]);
-        if ($status['power'] === SwitchBotApiDeviceStatus::OFF) {
+        if ($status['power'] === Status::Off->value) {
             return true;
         }
 
-        $this->command->request(['command' => SwitchBotApiDeviceCommand::TURN_OFF, 'id' => $this->botId]);
+        $this->command->execute(Command::TurnOff, $this->botId);
 
         return true;
     }

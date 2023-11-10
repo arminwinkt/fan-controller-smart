@@ -40,7 +40,7 @@ class FanControllerCommand extends Command
                 break;
         }
 
-        if(!$result) {
+        if (!$result) {
             return Command::FAILURE;
         }
 
