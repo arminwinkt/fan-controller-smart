@@ -7,7 +7,8 @@ This application leverages SwitchBot Meters to measure temperatures and SwitchBo
 
 - You need at least 2 SwitchBot Meters
    - One for Indoors, one for outdoor measurements
-- You need one SwitchBot Bot to control the action (start and stop the Fan to let air in)
+- You either need one SwitchBot Bot to control the action (start and stop the Fan to let air in)
+- Or a Shelly Smart Plug to control the action (giving power to a fan)
 - PHP 8.1+
 - Composer
 - The application is tested on **Linux** (Ubuntu 23.04)
