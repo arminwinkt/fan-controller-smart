@@ -10,8 +10,10 @@ require_once ROOT . '/src/config.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
-$dotenv->required('TOKEN')->notEmpty();
-$dotenv->required('SECRET')->notEmpty();
+$dotenv->required('SWITCHBOT_TOKEN')->notEmpty();
+$dotenv->required('SWITCHBOT_SECRET')->notEmpty();
+$dotenv->required('SHELLY_KEY')->notEmpty();
+$dotenv->required('SHELLY_PLUG_ID')->notEmpty();
 
 
 $app = new Application();

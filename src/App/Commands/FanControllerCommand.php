@@ -2,6 +2,7 @@
 
 namespace Console\App\Commands;
 
+use Console\App\Services\Shelly\ShellyService;
 use Console\App\Services\SwitchBot\SwitchBotService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,19 +23,26 @@ class FanControllerCommand extends Command
     {
         $output->writeln("Starting process...");
 
-        $service = new SwitchBotService();
+        $shelly = new ShellyService();
+        $switchbot = new SwitchBotService();
         $result = false;
 
         try {
             switch ($input->getArgument('mode')) {
                 case 'start':
-                    $result = $service->botTurnOn();
+                    $result = $shelly->plugTurnOn();
                     break;
                 case 'stop':
-                    $result = $service->botTurnOff();
+                    $result = $shelly->plugTurnOff();
                     break;
                 case 'auto':
-                    $result = $service->botAuto();
+                    $result = $switchbot->runByDewpoint(function () use ($shelly, $output) {
+                        $output->writeln("Turning fan on.");
+                        $shelly->plugTurnOn();
+                    }, function () use ($shelly, $output) {
+                        $output->writeln("Turning fan off.");
+                        $shelly->plugTurnOff();
+                    });
                     break;
                 default:
                     $output->writeln("Argument `mode` does not exist");

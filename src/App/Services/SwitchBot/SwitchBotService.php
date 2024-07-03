@@ -99,8 +99,9 @@ class SwitchBotService
      * @throws ServerExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws TransportExceptionInterface
+     * @throws Exception
      */
-    public function botAuto(): bool
+    public function runByDewpoint(callable $on, callable $off): bool
     {
         $deviceOutdoor = $this->list->findDevice(METER_OUTDOOR, $this->deviceList);
         if (!$deviceOutdoor) {
@@ -116,13 +117,11 @@ class SwitchBotService
 
         $calculate = new DewPointCalculationService($statusOutdoor, $statusIndoor);
         if ($calculate->calculate()) {
-            var_dump('TURN ONNNN');
-            $this->botTurnOn();
+            $on();
             return true;
         }
 
-        var_dump('TURN OFFFF');
-        $this->botTurnOff();
+        $off();
         return true;
     }
 }

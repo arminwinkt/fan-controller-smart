@@ -1,11 +1,10 @@
 <?php
 
-namespace Console\App\Services\SwitchBot\Api;
+namespace Console\App\Services\Shelly\Api;
 
 
 use Exception;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -13,9 +12,9 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-abstract class SwitchBotApi
+abstract class ShellyApi
 {
-    protected const BASE_URL = 'https://api.switch-bot.com/v1.1/';
+    protected const BASE_URL = 'https://shelly-111-eu.shelly.cloud/';
     protected const HTTP_METHOD_GET = 'GET';
     protected const HTTP_METHOD_POST = 'POST';
     protected HttpClientInterface $httpClient;
@@ -25,24 +24,9 @@ abstract class SwitchBotApi
         $this->httpClient = $this->createHttpClient();
     }
 
-    protected function createHttpClient(): HttpClientInterface
+    public function createHttpClient(): HttpClientInterface
     {
-        $token = $_ENV['SWITCHBOT_TOKEN'];
-        $secret = $_ENV['SWITCHBOT_SECRET'];
-        $nonce = Uuid::v4();
-        $t = time() * 1000;
-        $data = mb_convert_encoding($token . $t . $nonce, 'UTF-8');
-        $sign = hash_hmac('sha256', $data, $secret, true);
-        $sign = strtoupper(base64_encode($sign));
-
-        return HttpClient::create([
-            'headers' => [
-                "Authorization:" . $token,
-                "sign:" . $sign,
-                "nonce:" . $nonce,
-                "t:" . $t
-            ]
-        ]);
+        return HttpClient::create();
     }
 
     /**
@@ -54,20 +38,24 @@ abstract class SwitchBotApi
      */
     protected function fetch(string $method, string $url, ?array $payload = null): array
     {
+        $options = [
+            'auth_key' => $_ENV['SHELLY_KEY'],
+        ];
+
         $url = self::BASE_URL . $url;
-        $options = [];
-        if ($payload) {
-            $options['json'] = $payload;
-        }
-        $response = $this->httpClient->request($method, $url, $options);
+        $response = $this->httpClient->request($method, $url, [
+            'query' => array_merge($options, $payload),
+            'body' => array_merge($options, $payload),
+        ]);
 
         if ($response->getStatusCode() !== 200) {
-            throw new Exception("SwitchBotApi Http Code does not return 200 for $method $url. (Status code: {$response->getStatusCode()})");
+            throw new Exception("Shelly Http Code does not return 200 for $method $url. (Status code: {$response->getStatusCode()})");
         }
 
         $content = $response->toArray();
-        if ($content['statusCode'] !== 100) {
-            throw new Exception("SwitchBotApi result does not return status 100 for $url");
+
+        if (!$content['isok']) {
+            throw new Exception("Shelly response is not `isok` for $method $url. (Status code: {$response->getStatusCode()})");
         }
 
         return $this->formatResult($content);
@@ -84,5 +72,4 @@ abstract class SwitchBotApi
     public abstract function request(?array $options = null): ?array;
 
     protected abstract function formatResult(array $content): ?array;
-
 }
