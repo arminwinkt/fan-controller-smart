@@ -2,6 +2,8 @@
 
 namespace Console\App\Services\Temperature;
 
+use Console\App\Services\TelegramLogger;
+
 class DewPointCalculationService
 {
 
@@ -32,10 +34,12 @@ class DewPointCalculationService
     public function calculate(): bool
     {
         if ($this->temperatureOutdoor < TEMPS_MIN_OUTDOOR) {
+            TelegramLogger::getInstance()->log('Outdoor temp is too low');
             return false;
         }
 
         if ($this->temperatureIndoor < TEMPS_MIN_INDOOR) {
+            TelegramLogger::getInstance()->log('Indoor temp is too low');
             return false;
         }
 
@@ -43,6 +47,7 @@ class DewPointCalculationService
         $dewPointIndoor = $this->calculateDewPoint($this->temperatureIndoor, $this->humidityIndoor);
         $deltaDewPoint = $dewPointIndoor - $dewPointOutdoor;
 
+        TelegramLogger::getInstance()->log("Calculated Dewpoints: ($dewPointIndoor - $dewPointOutdoor) = $deltaDewPoint; min: " . TEMPS_SWITCH_OFF + TEMPS_HYSTERESE, 'debug');
         if (TEMPS_SWITCH_OFF + TEMPS_HYSTERESE < $deltaDewPoint) {
             return true;
         }
