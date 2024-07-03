@@ -60,6 +60,9 @@ class FanControllerCommand extends Command
             TelegramLogger::getInstance()->log('Command failed', 'error');
             TelegramLogger::getInstance()->log($exception->getMessage(), 'error');
 
+            TelegramLogger::getInstance()->log("Turning Fan OFF", 'info');
+            $shelly->plugTurnOff();
+
             return Command::FAILURE;
         }
 
