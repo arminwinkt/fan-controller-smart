@@ -14,6 +14,8 @@ $dotenv->required('SWITCHBOT_TOKEN')->notEmpty();
 $dotenv->required('SWITCHBOT_SECRET')->notEmpty();
 $dotenv->required('SHELLY_KEY')->notEmpty();
 $dotenv->required('SHELLY_PLUG_ID')->notEmpty();
+$dotenv->required('TELEGRAM_API_KEY')->notEmpty();
+$dotenv->required('TELEGRAM_CHANNEL')->notEmpty();
 
 
 $app = new Application();
