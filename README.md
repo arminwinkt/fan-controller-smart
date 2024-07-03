@@ -17,7 +17,7 @@ This application leverages SwitchBot Meters to measure temperatures and SwitchBo
 
 1: Clone GitHub Repository
 ```bash
-git clone https://https://github.com/arminwinkt/fan-controller-smart && cd fan-controller-smart
+git clone https://github.com/arminwinkt/fan-controller-smart && cd fan-controller-smart
 ```
 
 2: Run composer install
